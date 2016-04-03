@@ -50,16 +50,16 @@ number to one gets the first prime after PRIMES."
 ;;; Primality Tests:
 
 (defun trial-division-prime-p (n)
-  (block not-prime
-    (loop
-       for div from 2 to (truncate (sqrt n))
-       when (zerop (mod n div))
-       do (return-from not-prime))
-    t))
+  "Checks if N is prime by simple trial division.  Returns t if N is
+prime, otherwise nil."
+  (loop
+     for div from 2 to (truncate (sqrt n))
+     when (zerop (mod n div)) do (return)
+     finally (return t)))
 
 (defun original-sieve (size)
   "Returns a bit vector with indexes equal to numbers.  If index is 1,
-then the number is prime (0 and 1 are set as if prime)."
+then the number is prime (one and zero are set as if prime)."
   (let ((sieve (make-bit-vector (1+ size)))
 	(max (truncate (sqrt size))))
     (declare (type (vector bit) sieve))
@@ -70,6 +70,7 @@ then the number is prime (0 and 1 are set as if prime)."
 	(delete-multiples sieve finger)))))
 
 (defun wheel-sieve (size &optional (primes '(2 3 5 7)))
+  "Similar to ORIGINAL-SIEVE, but uses a wheel optimization."
   (let ((sieve (make-bit-vector (1+ size)))
 	(max (truncate (sqrt size))))
     (dolist (prime primes)
